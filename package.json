@@ -23,10 +23,6 @@
       "optional": true
     }
   },
-  "tree-sitter": [],
-  "devDependencies": {
-    "prebuildify": "^6.0.0"
-  },
   "files": [
     "grammar.js",
     "binding.gyp",
@@ -34,5 +30,8 @@
     "bindings/node/*",
     "queries/*",
     "src/**"
-  ]
+  ],
+  "devDependencies": {
+    "prebuildify": "^6.0.0"
+  }
 }

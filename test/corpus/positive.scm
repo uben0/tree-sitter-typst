@@ -978,8 +978,10 @@ positive/067
 	(code
 		(import
 			(string)
-			(ident)
-			(ident))))
+			(binding
+				(ident))
+			(binding
+				(ident)))))
 
 
 =====================
@@ -1960,7 +1962,8 @@ c, d
 	(code
 		(import
 			(string)
-			(ident)))
+			(binding
+				(ident))))
 	(text))
 
 
@@ -3015,8 +3018,10 @@ positive/206
 			(add
 				(string)
 				(string))
-			(ident)
-			(ident))))
+			(binding
+				(ident))
+			(binding
+				(ident)))))
 
 
 =====================
@@ -3078,7 +3083,8 @@ b)
 		(group
 			(import
 				(string)
-				(ident)))))
+				(binding
+					(ident))))))
 
 
 =====================
@@ -4246,8 +4252,10 @@ b, c)
 		(group
 			(import
 				(string)
-				(ident)
-				(ident)))))
+				(binding
+					(ident))
+				(binding
+					(ident))))))
 
 
 =====================
@@ -4881,9 +4889,11 @@ positive/315
 			(ident)
 			(ident)
 			(import
-				(string)
-				(ident)
-				(ident)))))
+				import: (string)
+				(binding
+					(ident))
+				(binding
+					(ident))))))
 
 
 =====================
@@ -5300,12 +5310,14 @@ positive/343
 				(string))
 			(as
 				(ident))
-			(ident)
-			(as
-				(ident))
-			(ident)
-			(as
-				(ident)))))
+			(binding
+				(ident)
+				(as
+					(ident)))
+			(binding
+				(ident)
+				(as
+					(ident))))))
 
 
 =====================
@@ -6645,3 +6657,57 @@ positive/430
 	(raw_blck
 		lang: (ident)
 		(blob)))
+
+
+=====================
+positive/431
+=====================
+#import "a": a.b
+---------------------
+
+(source_file
+	(code
+		(import
+			import: (string)
+			(binding
+				(ident)
+				(ident)))))
+
+
+=====================
+positive/432
+=====================
+#import "a": (a.b as c, x)
+---------------------
+
+(source_file
+	(code
+		(import
+			import: (string)
+			(binding
+				(ident)
+				(ident)
+				(as
+					(ident)))
+			(binding
+				(ident)))))
+
+
+=====================
+positive/433
+=====================
+#import "a": (a.b.c as c, x,)
+---------------------
+
+(source_file
+	(code
+		(import
+			import: (string)
+			(binding
+				(ident)
+				(ident)
+				(ident)
+				(as
+					(ident)))
+			(binding
+				(ident)))))

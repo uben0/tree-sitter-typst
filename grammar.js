@@ -476,13 +476,17 @@ module.exports = grammar({
         token(prec(10, ':')),
         choice(
           alias('*', $.wildcard),
-          seq(
-            repeat(seq($.ident, optional($.as), token(prec(1, ',')))),
-            optional(seq($.ident, optional($.as))),
-          ),
+          optional($._bindings),
+          seq('(', optional($._bindings), ')'),
         ),
       )),
     )),
+    _bindings: $ => seq(
+      $.binding,
+      repeat(seq(token(prec(1, ',')), $.binding)),
+      optional(token(prec(1, ','))),
+    ),
+    binding: $ => prec.right(seq($.ident, repeat(seq(token(prec(2, '.')), $.ident)), optional($.as))),
     include: $ => prec(0, seq(
       'include',
       $._expr,

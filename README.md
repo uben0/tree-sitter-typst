@@ -20,11 +20,10 @@ The documentation of this implementation is available in [DOC](DOC.md). Because 
 
 ## TODO
 
-- [X] Update 0.11
-  - [X] Hangul script doesn't form words
-  - [X] Context operator
-  - [X] No line comment inside block comment
-- [ ] More tests, objectif 1000, current 430
+- [ ] Update 0.12
+  - [X] New import syntax
+  - [ ] Other changes?
+- [ ] More tests, objectif 1000, current 433
 - [X] Installation
   - [X] Helix
   - [X] Emacs
