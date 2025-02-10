@@ -1,38 +1,38 @@
-# A TreeSitter grammar for the Typst language
+# A Typst grammar for Tree-Sitter
 
 Typst official page https://typst.app
 
-TreeSitter documentation page https://tree-sitter.github.io
+Tree-Sitter documentation page https://tree-sitter.github.io
 
-Typst doesn't have yet an official TreeSitter grammar. This grammar is complete but may contains bug as it is very recent.
+Typst doesn't have yet an official Tree-Sitter grammar. This grammar is complete but may contains bug as it is very recent.
 
 ## Get involved
 
-Your help is welcome. You don't have to know anything about tree-sitter to help. We need you to find bugs!
+Your help is welcome. You don't have to know anything about Tree-Sitter to help. You just have to use this grammar and report any bad highlighting you see! You can open an issue or simply send me by email the Typst code causing the bug. See below installation instructions for this grammar. Even if your not sure it is a bug, it doesn't hurt to repport it.
 
-Find a bug by using this grammar. If you find an incorrect highlighting of your Typst files, then you found a bug. You can open an issue or simply send me by mail the Typst code causing the bug. See below installation instructions for this grammar. Even if your not sure it is a bug, it doesn't hurt to repport it.
+I need help to:
+  - write the different "queries" for the different editors like Neovim or Helix. Indeed, the queries like the highlights or the indentation may vary between editors.
+  - have more tests, by either directly writing some or by improving https://github.com/uben0/tree-sitter-typst-utils/tree/main/test-gen
+  - implement the full rewrite on branch `rewrite`. This time the code is documented and you may get involve however you want. Ask me how to help, ask me what needs to be explained and documented. I aim at making this new implementation maintainable by the community.
 
-Any inconsistancy between this syntax and Typst's one is considered a bug. In Helix editor, the syntax tree of selected text can be displayed with `:tree-sitter-subtree` command.
+Don't hesitate to contact me (mailto:eddie.gerbais-nief@proton.me) or to open an issue, even if you're not sure. It doesn't hurt.
 
-Don't hesitate to contact me: eddie.gerbais-nief@proton.me
-
-The documentation of this implementation is available in [DOC](DOC.md). Because parsing Typst is really tricky. It would also be great to have a competitor parser, to see if the other finds better ways, and for redunduncy, because as of today, only one person understand how this parser works (me), and if I'm out, this parser won't be maintained (I guess). If your interresting in implementing a competitor Typst tree-sitter parser, I'd be happy to help you.
+The documentation of the current implementation (not the rewrite) is available in [DOC](DOC.md). But I suggest to ignore the current implementation as it is a spaghetti mess. However, the [DOC](DOC.md) brings up interesting chalenges.
 
 ## TODO
 
-- [ ] Update 0.12
-  - [X] New import syntax
-  - [ ] Other changes?
+- [ ] Update 0.13
+  - [ ] Identify changes
 - [ ] More tests, objectif 1000, current 433
-- [X] Installation
+  - [x] generate tests from official Typst parser. https://github.com/uben0/tree-sitter-typst-utils/tree/main/test-gen
+- [X] Editor support
   - [X] Helix
   - [X] Emacs
   - [X] NeoVim
 - [ ] Simplification
-  - [ ] Implement a type 3/4 parser generator (work in progress)
-  - [ ] Migrate all lexing to external scanner
-  - [ ] Remove dependency on `get_column`
-    - [ ] Check if this fixes [`fixme/011`](corpus/fixme.scm)
+  - [ ] Full rewrite for a correct and maintainable code base (on branch `rewrite`)
+  - [ ] Implement a type 3/4 parser generator (work in progress). The rewrite have a lexer based on the official parser but may benefit from automatic code generation.
+  - [ ] Migrate all lexing to external scanner (work in progress on `rewrite` branch)
 
 ## Features
 
@@ -45,10 +45,12 @@ The documentation of this implementation is available in [DOC](DOC.md). Because 
 
 # Installation
 
+## Language Server
+
 Having syntax highlighting is great but having syntax highlighting and the language server is even greater. If you have `cargo` installed (Rust's package manager), you can install Typst language server with the following command (you don't have to be in any particular directory):
 
 ```sh
-cargo install --git https://github.com/nvarner/typst-lsp typst-lsp
+cargo install --git https://github.com/Myriad-Dreamin/tinymist --locked tinymist
 ```
 
 ## Neovim
@@ -70,20 +72,16 @@ Typst support for Emacs is available through the following package:
 
 ## Helix
 
-The next release of Helix will support Typst. Waiting until then, you can add support for Typst with the following instructions:
+This grammar is already builtin Helix. But it might not be up to date. To manyally install it:
 
 1. Locate the configuration directory:
 
-- Global `/usr/share/helix`
 - Local `~/.config/helix`
-
+- Global `/usr/share/helix`
 
 2. Append the following configuration to the `languages.toml` file (create it if it doesn't exist).
 
 ```toml
-[language-server.typst-lsp]
-command = "typst-lsp"
-
 [[language]]
 name = "typst"
 scope = "source.typst"
@@ -126,4 +124,4 @@ hx --grammar fetch
 hx --grammar build
 ```
 
-The fetch command will clone the git repository, and the build command will compile the grammar.
+The fetch command will clone the git repository, and the build command will compile the grammar. Open the logs to have insightfull messages in case it doesn't work.

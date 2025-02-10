@@ -385,7 +385,7 @@ void tree_sitter_typst_external_scanner_deserialize(
 }
 
 // SCAN ////////////////////////////////////////////////////////////////////////
-bool parse_comment(struct scanner* self, TSLexer* lexer) {
+static bool parse_comment(struct scanner* self, TSLexer* lexer) {
 	lex_advance_if(lex_next == '/');
 	if (lex_next == '/') {
 		lex_advance();
@@ -424,7 +424,7 @@ bool parse_comment(struct scanner* self, TSLexer* lexer) {
 	}
 	return false;
 }
-bool parse_space(struct scanner* self, TSLexer* lexer) {
+static bool parse_space(struct scanner* self, TSLexer* lexer) {
 	lex_advance_if(is_sp(lex_next));
 	while (is_sp(lex_next)) {
 		lex_advance();

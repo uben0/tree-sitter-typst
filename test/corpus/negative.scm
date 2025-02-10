@@ -6,9 +6,7 @@ _
 ---------------------
 
 (source_file
-	(emph
-		(item)
-		(MISSING _)))
+	(ERROR))
 
 
 =====================
@@ -20,6 +18,4 @@ negative/001
 ---------------------
 
 (source_file
-	(emph
-		(item)
-		(MISSING _)))
+	(ERROR))
