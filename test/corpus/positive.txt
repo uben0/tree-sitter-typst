@@ -1,0 +1,147 @@
+====================
+000
+====================
+hello
+--------------------
+
+(source_file
+  (markup
+    (text)))
+
+
+====================
+001
+====================
+hello  world
+--------------------
+
+(source_file
+  (markup
+    (text)
+    (space)
+    (text)))
+
+
+====================
+002
+====================
+hello *world*
+--------------------
+
+(source_file
+  (markup
+    (text)
+    (space)
+    (strong
+      (star)
+      (markup
+        (text))
+      (star))))
+
+
+====================
+003
+====================
+hello*world
+--------------------
+
+(source_file
+  (markup
+    (text)
+    (text)))
+
+
+====================
+004
+====================
+world 
+--------------------
+
+(source_file
+  (markup
+    (text)
+    (space)))
+
+
+====================
+005
+====================
+_*hello* *_world_*_
+--------------------
+
+(source_file
+  (markup
+    (emph
+      (underscore)
+      (markup
+        (strong
+          (star)
+          (markup
+            (text))
+          (star))
+        (space)
+        (strong
+          (star)
+          (markup
+            (emph
+              (underscore)
+              (markup
+                (text))
+              (underscore)))
+          (star)))
+      (underscore))))
+
+
+====================
+006
+====================
+#i
+--------------------
+
+(source_file
+  (markup
+    (hash)
+    (ident)))
+
+
+====================
+007
+====================
+a b#a b
+--------------------
+
+(source_file
+  (markup
+    (text)
+    (hash)
+    (ident)
+    (space)
+    (text)))
+
+
+====================
+008
+====================
+#2
+--------------------
+
+(source_file
+  (markup
+    (hash)
+    (int)))
+
+
+====================
+009
+====================
+`2 + 3 x `
+--------------------
+
+(source_file
+  (markup
+    (raw
+      (raw_delim)
+      (text)
+      (raw_delim))))
+
+

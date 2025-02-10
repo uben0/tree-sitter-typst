@@ -1,0 +1,35 @@
+{
+  "grammars": [
+    {
+      "name": "typst",
+      "camelcase": "Typst",
+      "scope": "source.typst",
+      "file-types": [
+        ".typ"
+      ],
+      "injection-regex": "^typst$"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Typst grammar for Tree-Sitter",
+    "authors": [
+      {
+        "name": "Eddie Gerbais-Nief",
+        "email": "eddie.gerbais-nief@proton.me"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/uben0/tree-sitter-typst"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
