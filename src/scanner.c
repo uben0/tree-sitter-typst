@@ -10,21 +10,27 @@ enum TokenType {
   HASH,
   IDENT,
   INT,
+  RAW_DELIM,
+  RAW_CONTENT,
 };
 
 enum LexMode {
   MARKUP,
   CODE,
   MATH,
+  RAW,
+  RAW_TAIL,
 };
 
 typedef struct {
   int32_t last_symbol;
+  uint8_t raw_level;
 } Scanner ;
 
 void *tree_sitter_typst_external_scanner_create() {
   Scanner *self = (Scanner*)malloc(sizeof(Scanner));
   self->last_symbol = 0;
+  self->raw_level = 0;
   return self;
 }
 
@@ -37,8 +43,15 @@ unsigned tree_sitter_typst_external_scanner_serialize(
   char *buffer
 ) {
   Scanner *self = payload;
-  *((int32_t*)buffer) = self->last_symbol;
-  return sizeof(int32_t);
+  unsigned count = 0;
+
+  *((int32_t*)(buffer + count)) = self->last_symbol;
+  count += sizeof(int32_t);
+
+  *((uint8_t*)(buffer + count)) = self->raw_level;
+  count += sizeof(uint8_t);
+
+  return count;
 }
 
 void tree_sitter_typst_external_scanner_deserialize(
@@ -47,11 +60,22 @@ void tree_sitter_typst_external_scanner_deserialize(
   unsigned length
 ) {
   Scanner *self = payload;
-  if (length == sizeof(int32_t)) {
-    self->last_symbol = *((int32_t*)buffer);
+  unsigned count = 0;
+  if (length > 0) {
+    self->last_symbol = *((int32_t*)(buffer + count));
+    count += sizeof(int32_t);
+
+    self->raw_level = *((uint8_t*)(buffer + count));
+    count += sizeof(uint8_t);
+
+    if (count != length) {
+      printf("mismatched lengths when deserializing\n");
+      exit(1);
+    }
   }
   else {
     self->last_symbol = 0;
+    self->raw_level = 0;
   }
 }
 
@@ -161,6 +185,7 @@ static bool self_whitespace(Scanner *self, TSLexer *lexer, enum LexMode lex_mode
 
 // https://github.com/typst/typst/blob/e4f8e57/crates/typst-syntax/src/lexer.rs#L514
 static bool self_text(Scanner *self, TSLexer *lexer) {
+  lexer->mark_end(lexer);
   lexer->result_symbol = TEXT;
   scanner_advance(self, lexer);
   while (scanner_peek(self, lexer) != 0) {
@@ -183,6 +208,7 @@ static bool self_text(Scanner *self, TSLexer *lexer) {
       case '*':
       case '_':
       case '#':
+      case '`':
         return true; 
       default:
         break;
@@ -197,27 +223,52 @@ static bool self_text(Scanner *self, TSLexer *lexer) {
 static bool self_markup(Scanner *self, TSLexer *lexer, int32_t c, int32_t l) {
   switch (c) {
     case '#':
+      lexer->mark_end(lexer);
       lexer->result_symbol = HASH;
       return true;
     case '*': {
       bool last_is_wordy = is_wordy(l);
       bool next_is_wordy = is_wordy(scanner_peek(self, lexer));
+      // printf("check star in word %b %b\n", last_is_wordy, next_is_wordy);
       if (!(last_is_wordy && next_is_wordy)) {
+        lexer->mark_end(lexer);
         lexer->result_symbol = STAR;
         return true;
       }
+      break;
     }
     case '_': {
       bool last_is_wordy = is_wordy(l);
       bool next_is_wordy = is_wordy(scanner_peek(self, lexer));
       if (!(last_is_wordy && next_is_wordy)) {
+        lexer->mark_end(lexer);
         lexer->result_symbol = UNDERSCORE;
+        return true;
+      }
+      break;
+    }
+    case '`': {
+      uint8_t level = 1;
+      lexer->mark_end(lexer);
+      while (scanner_peek(self, lexer) == '`') {
+        level += 1;
+        scanner_visit(self, lexer);
+      }
+      lexer->result_symbol = RAW_DELIM;
+      if (level == 2) {
+        self->raw_level = 1;
+        return true;
+      }
+      else {
+        lexer->mark_end(lexer);
+        self->raw_level = level;
         return true;
       }
     }
     default:
-      return self_text(self, lexer);
+      break;
   }
+  return self_text(self, lexer);
 }
 
 
@@ -250,6 +301,7 @@ static bool self_number(Scanner *self, TSLexer *lexer, int32_t c) {
 }
 
 static bool self_code(Scanner *self, TSLexer *lexer, int32_t c) {
+  lexer->mark_end(lexer);
   if (is_id_start(c)) {
     return self_ident(self, lexer);
   }
@@ -257,6 +309,46 @@ static bool self_code(Scanner *self, TSLexer *lexer, int32_t c) {
     return self_number(self, lexer, c);
   }
   return false;
+}
+
+
+static bool self_raw(Scanner *self, TSLexer *lexer, int32_t c) {
+  uint8_t level = 0;
+  if (c == '`') {
+    level += 1;
+  }
+  while (level < self->raw_level && c != 0) {
+    c = scanner_visit(self, lexer);
+    if (c == '`') {
+      level += 1;
+    }
+    else {
+      level = 0;
+      lexer->mark_end(lexer);
+    }
+  }
+  lexer->result_symbol = RAW_CONTENT;
+  return true;
+}
+
+
+static bool self_raw_tail(Scanner *self, TSLexer *lexer, int32_t c) {
+  lexer->mark_end(lexer);
+  if (c != '`') {
+    printf("expecting raw delim\n");
+    exit(1);
+  }
+  uint8_t level = self->raw_level - 1;
+  while (level > 0) {
+    c = scanner_advance(self, lexer);
+    if (c != '`') {
+      printf("expecting raw delim\n");
+      exit(1);
+    }
+    level -= 1;
+  }
+  lexer->result_symbol = RAW_DELIM;
+  return true;
 }
 
 
@@ -268,7 +360,7 @@ bool tree_sitter_typst_external_scanner_scan(
   Scanner *self = payload;
   lexer->mark_end(lexer);
   int32_t l = self->last_symbol;
-  int32_t c = scanner_advance(self, lexer);
+  int32_t c = scanner_visit(self, lexer);
   if (c != 0) {
     enum LexMode lex_mode;
     if (valid_symbols[TEXT]) {
@@ -277,12 +369,20 @@ bool tree_sitter_typst_external_scanner_scan(
     else if (valid_symbols[IDENT]) {
       lex_mode = CODE;
     }
+    else if (valid_symbols[RAW_CONTENT]) {
+      lex_mode = RAW;
+    }
+    else if (valid_symbols[RAW_DELIM]) {
+      lex_mode = RAW_TAIL;
+    }
     else {
       printf("could not determine lexing mode\n");
       exit(1);
     }
+    // printf("lex_mode = %d\n", lex_mode);
     
-    if (is_space(c, lex_mode)) {
+    if (lex_mode != RAW && lex_mode != RAW_TAIL && is_space(c, lex_mode)) {
+      lexer->mark_end(lexer);
       return self_whitespace(self, lexer, lex_mode, c);
     }
     switch (lex_mode) {
@@ -290,6 +390,10 @@ bool tree_sitter_typst_external_scanner_scan(
         return self_markup(self, lexer, c, l);
       case CODE:
         return self_code(self, lexer, c);
+      case RAW:
+        return self_raw(self, lexer, c);
+      case RAW_TAIL:
+        return self_raw_tail(self, lexer, c);
       case MATH:
         return false;
     }

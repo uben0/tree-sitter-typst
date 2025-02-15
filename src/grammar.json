@@ -31,6 +31,10 @@
               "name": "emph"
             },
             {
+              "type": "SYMBOL",
+              "name": "raw"
+            },
+            {
               "type": "SEQ",
               "members": [
                 {
@@ -105,6 +109,28 @@
         ]
       }
     },
+    "raw": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "raw_delim"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "raw_content"
+          },
+          "named": true,
+          "value": "text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "raw_delim"
+        }
+      ]
+    },
     "_expr": {
       "type": "CHOICE",
       "members": [
@@ -155,6 +181,14 @@
     {
       "type": "SYMBOL",
       "name": "int"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "raw_delim"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "raw_content"
     }
   ],
   "inline": [],

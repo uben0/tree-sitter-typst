@@ -43,11 +43,34 @@
           "named": true
         },
         {
+          "type": "raw",
+          "named": true
+        },
+        {
           "type": "space",
           "named": true
         },
         {
           "type": "strong",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "raw",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "raw_delim",
           "named": true
         },
         {
@@ -102,6 +125,10 @@
   },
   {
     "type": "int",
+    "named": true
+  },
+  {
+    "type": "raw_delim",
     "named": true
   },
   {
