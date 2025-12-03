@@ -59,16 +59,7 @@ The https://github.com/nvim-treesitter/nvim-treesitter provides this grammar.
 
 ## Emacs
 
-Typst support for Emacs is available through the following package:
-
-[typst-ts-mode](https://git.sr.ht/~meow_king/typst-ts-mode)
-
-```scheme
-(use-package typst-ts-mode
-  :elpaca (:type git :host sourcehut :repo "meow_king/typst-ts-mode")
-  :custom
-  (typst-ts-mode-watch-options "--open"))
-```
+[typst-ts-mode](https://codeberg.org/meow_king/typst-ts-mode)
 
 ## Helix
 
