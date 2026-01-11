@@ -939,7 +939,7 @@ bool tree_sitter_typst_external_scanner_scan(
 	}
 
 	if (valid_symbols[TOKEN_MATH_GROUP_END]) {
-		if (lex_next == ')' || lex_next == ']' || lex_next == '}') {
+		if (lex_next == ')' || lex_next == ']' || lex_next == '}' || lex_next == 0x27e9) {
 			lex_advance();
 			lex_accept(TOKEN_MATH_GROUP_END);
 		}

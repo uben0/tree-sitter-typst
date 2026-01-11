@@ -218,7 +218,7 @@ module.exports = grammar({
     _math_token_colon: $ => ':',
     _math_token_rpar:  $ => token(prec(2, ')')),
     _math_token_lpar:  $ => token(prec(1, '(')),
-    _math_token_ldlm:  $ => token(prec(0, choice('(', '[', '{', '[|'))),
+    _math_token_ldlm:  $ => token(prec(0, choice('(', '[', '{', '[|', '\u27e8'))),
     _math_token_orph:  $ => token(prec(0, choice(')', ']', '}', '|]', '||', '|'))),
 
     _math_group: $ => prec(1, seq(
