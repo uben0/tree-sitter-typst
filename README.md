@@ -4,11 +4,11 @@ Typst official page https://typst.app
 
 Tree-Sitter documentation page https://tree-sitter.github.io
 
-Typst doesn't have yet an official Tree-Sitter grammar. This grammar is complete but may contains bug as it is very recent.
+Typst doesn't have an official Tree-Sitter grammar yet. This grammar is complete but may contain bugs as it is very recent.
 
 ## Get involved
 
-Your help is welcome. You don't have to know anything about Tree-Sitter to help. You just have to use this grammar and report any bad highlighting you see! You can open an issue or simply send me by email the Typst code causing the bug. See below installation instructions for this grammar. Even if your not sure it is a bug, it doesn't hurt to repport it.
+Your help is welcome. You don't have to know anything about Tree-Sitter to help. You just have to use this grammar and report any bad highlighting you see! You can open an issue or simply send me by email the Typst code causing the bug. See below installation instructions for this grammar. Even if you are not sure it is a bug, it doesn't hurt to report it.
 
 I need help to:
   - write the different "queries" for the different editors like Neovim or Helix. Indeed, the queries like the highlights or the indentation may vary between editors.
@@ -17,7 +17,7 @@ I need help to:
 
 Don't hesitate to contact me (mailto:eddie.gerbais-nief@proton.me) or to open an issue, even if you're not sure. It doesn't hurt.
 
-The documentation of the current implementation (not the rewrite) is available in [DOC](DOC.md). But I suggest to ignore the current implementation as it is a spaghetti mess. However, the [DOC](DOC.md) brings up interesting chalenges.
+The documentation of the current implementation (not the rewrite) is available in [DOC](DOC.md). But I suggest to ignore the current implementation as it is a spaghetti mess. However, the [DOC](DOC.md) brings up interesting challenges.
 
 ## TODO
 
@@ -72,7 +72,7 @@ Typst support for Emacs is available through the following package:
 
 ## Helix
 
-This grammar is already builtin Helix. But it might not be up to date. To manyally install it:
+This grammar is already builtin Helix. But it might not be up to date. To manually install it:
 
 1. Locate the configuration directory:
 
@@ -124,4 +124,4 @@ hx --grammar fetch
 hx --grammar build
 ```
 
-The fetch command will clone the git repository, and the build command will compile the grammar. Open the logs to have insightfull messages in case it doesn't work.
+The fetch command will clone the git repository, and the build command will compile the grammar. Open the logs to have insightful messages in case it doesn't work.
