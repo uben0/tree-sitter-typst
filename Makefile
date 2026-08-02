@@ -1,11 +1,11 @@
 test: src/parser.c
-	tree-sitter test -f Test
+	tree-sitter test --file-name Test
 
 all: src/parser.c
 	tree-sitter test
 
 fixme: src/parser.c
-	tree-sitter test -f Fixme
+	tree-sitter test --file-name Fixme
 
 src/parser.c: grammar.js
 	tree-sitter generate
