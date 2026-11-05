@@ -10,6 +10,8 @@
         "typst",
         "typ"
       ],
+	  "highlights": "queries/typst/highlights.scm",
+	  "injections": "queries/typst/injections.scm",
       "injection-regex": "typ(st)?",
       "class-name": "TreeSitterTypst"
     }
